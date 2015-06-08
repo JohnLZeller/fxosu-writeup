@@ -3,7 +3,9 @@
 \usepackage{pdfpages}
 \usepackage{fancyhdr}
 \usepackage{pgfplots}
+\usepackage{listings}
 \usepackage{hyperref}
+\usepackage{menukeys}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \graphicspath{ {images/} }
@@ -28,6 +30,18 @@
   stringstyle=\color{red}\ttfamily,
   morestring=[b]',
   morestring=[b]"
+}
+\lstdefinestyle{BashInputStyle}{
+  language=bash,
+  basicstyle=\small\sffamily,
+  numbers=left,
+  numberstyle=\tiny,
+  numbersep=3pt,
+  frame=tb,
+  columns=fullflexible,
+  backgroundcolor=\color{yellow!20},
+  linewidth=0.9\linewidth,
+  xleftmargin=0.1\linewidth
 }
 \pagestyle{fancy}
 \fancyhf{}
@@ -320,6 +334,186 @@ This file required modification to include references to our new XPCOM component
 \pagebreak
 
 \subsection{Building/Running from Source}
+Running our project requires building a custom version of Firefox for the destination platform.  Our code 
+functions on Firefox for Desktop, Firefox for Android as well as Firefox OS.  These build instruction are
+written assuming you are using a Linux distribution (mostly for consistency). Building for Firefox OS is not currently supported in Windows. If your preferred OS is not Linux there will be links in the useful links section which will have instructions for Windows and Macintosh. 
+\subsubsection{Linux Distribution Requirements}
+	\begin{enumerate}
+		\item 64 bit OS
+		\item GCC 4.7 or later (4.8 for Firefox OS)
+		\item 8GB of RAM is recommended (although not required)
+		\item If you are compiling in a VM be sure to have at least 60GB of disk space (or more).
+		\item I'd recommend a wired internet connection as well
+	\end{enumerate}
+\subsubsection{Install Build Prerequisites}
+	\begin{enumerate}
+	\item \textbf{Android/Desktop} \\
+	If you want to build our code for Android or Desktop. Install these packages.  If you are trying to
+	build Firefox OS skip to the next section which will be described in the next section. For Android or 
+	Desktop the required packages can be installed using a Mozilla provided bootstrap file.  Run the
+	wget command.  
+	
+	\begin{lstlisting}[style=BashInputStyle, breaklines=true]
+	wget -q https://hg.mozilla.org/mozilla-central/raw-file/default/python/mozboot/bin/bootstrap.py && python bootstrap.py
+	\end{lstlisting}
+
+	You will be prompted whether you are trying to build for Desktop or Android. Select the build configuration you are  		attempting.  Note you can switch build platforms by running bootstrap again and re-configuring your .mozconfig file.  Note that bootstrapping for Android will take longer as it will install the entire Android platform.
+	\item \textbf{Firefox OS}\\
+	The prerequisites for building Firefox OS vary depending on the distribution of Linux that you are are running as well as device you are targeting.  For these build instruction I am going to provide instructions for building on Ubuntu 12.04 targeting the Flame. The Flame is the official reference device for testing and debugging on Firefox OS.  We were provided with three of the devices for the year for testing/debugging.  
+	
+	If you are a using a different distribution or want to build for a different device instructions for getting the build prerequisites can be found here: \\ \\
+	\href{https://developer.mozilla.org/en-US/Firefox\_OS/Firefox\_OS\_build\_prerequisites}{https://developer.mozilla.org/en-US/Firefox\_OS/Firefox\_OS\_build\_prerequisites}
+	\begin{itemize}
+		\item Install Ubuntu 12.04 Prerequisites (FIREFOX OS BUILDS ONLY) \\
+		\begin{lstlisting}[style=BashInputStyle, breaklines=true]
+sudo apt-get update
+sudo apt-get install autoconf2.13 bison bzip2 ccache curl flex gawk gcc g++ g++-multilib git ia32-libs lib32ncurses5-dev lib32z1-dev libasound-dev libgconf2-dev libgl1-mesa-dev libx11-dev lzop make zip
+sudo apt-get install libxml2-utils
+			\end{lstlisting}
+		\item Install adb (if you haven't already done so with the bootstrap command above) \\ \\
+		There are many ways to install adb, the easiest is on Ubuntu 12.04 is to download and extract the Android SDK found here.\\ \\
+		\href{http://developer.android.com/sdk/installing/index.html}{http://developer.android.com/sdk/installing/index.html}
+		\item Configure udev rules for the device \\ \\
+		This can be done by adding the following lines to your /etc/udev/rules.d/android.rules file.  NOTE: if this file doesn't exist you should create it and use chmod to make it readable.  
+	\begin{lstlisting}[style=BashInputStyle, breaklines=true]
+SUBSYSTEM=="usb", ATTR{idVendor}=="05c6", MODE="0666", GROUP="plugdev"
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", MODE="0666", GROUP="plugdev"
+	\end{lstlisting}
+		After adding the rules restart the udev daemon
+		\begin{lstlisting}[style=BashInputStyle]
+sudo service udev restart
+		\end{lstlisting}	
+	\end{itemize}
+	\end{enumerate}	
+
+\subsubsection{Get a Copy of Mozilla Central}
+	Run the following command to checkout a copy of Mozilla Repository.  This could take awhile (depending 
+	on your internet connection.)  There is a LOT of code!
+	
+	\begin{lstlisting}[style=BashInputStyle, breaklines=true]
+	hg clone https://hg.mozilla.org/mozilla-central
+	\end{lstlisting}
+	
+\subsubsection{Get a Copy of our Source} 
+	While you have been given our source code, the easiest way to get our code in place in our copy of mozilla-central is by
+	checking out a copy of our repository. 
+
+	\begin{lstlisting}[style=BashInputStyle, breaklines=true]
+	hg clone https://github.com/JohnLZeller/fxosu.git
+	\end{lstlisting}	
+	
+\subsubsection{Patching Our Code into Mozilla Central}
+	Getting our source code positioned in mozilla-central to be built is simple using mercurial.  Navigate to the mozilla-
+	central directory which was created a two steps ago.  Use the following command replacing the path with the path to the
+	diff file which is inside the repository for our source which was created last step.
+	
+	\begin{lstlisting}[style=BashInputStyle]
+	hg import path/to/fxosu.diff
+	\end{lstlisting}
+	
+\subsubsection{Building and Running Firefox!}
+	\begin{enumerate}
+		\item \textbf{Desktop} \\ \\
+		For desktop no build configurations are required.  To build our code navigate to the mozilla-central directory and run
+\begin{lstlisting}[style=BashInputStyle]
+./mach build
+./mach run
+\end{lstlisting}
+The final command should launch the newly built Firefox Browser with our service built it!
+		\item \textbf{Android} \\ \\
+		Android requires configuring to build depending on the target device.  	This is done using a configuration file called .mozconfi in the root of the mozilla-central directory.  This file is automatically generated for building desktop.  But requires some options to configure the build for android.  Create a .mozconfig text file and add the following options:
+		
+		\begin{lstlisting}[style=BashInputStyle]
+# Build Firefox for Android:
+ac_add_options --enable-application=mobile/android
+
+# Chose one of the following for targets for x86 or ARM
+ac_add_options --target=i386-linux-android
+ac_add_options --target=arm-linux-androideabi
+
+# With the following Android SDK and NDK:
+ac_add_options --with-android-sdk="/path/to/android-sdk/platforms/android-22"
+ac_add_options --with-android-ndk="/path/to/android-ndk-r10e"
+		\end{lstlisting}
+Be sure to only include one of the --target options above depending on the architecture of your device or emulator. After creating the configuration file the following commands will build, package and install Firefox to you device.  Make sure that your device is plugged in and connected to adb before running these commands. 
+\begin{lstlisting}[style=BashInputStyle]
+./mach build
+./mach package
+./mach install
+\end{lstlisting}
+		\item \textbf{Firefox OS}
+		\begin{itemize}
+		\item Clone the B2G (Boot 2 Gecko) repository.  \\
+		This is done using git.
+\begin{lstlisting}[style=BashInputStyle]
+git clone git://github.com/mozilla-b2g/B2G.git
+\end{lstlisting}
+		\item Navigate to the repository
+\begin{lstlisting}[style=BashInputStyle]
+cd B2G
+\end{lstlisting}
+		\item Create a .userconfig file \\
+		We are doing this because we want to build with the custom version on mozilla-central we created in the last couple of steps.  Create a file called .userconfig in the B2G directory and add the following lines replacing the paths with the path to our custom mozilla-central repository.
+\begin{lstlisting}[style=BashInputStyle]
+export GECKO_PATH=/path/to/mozilla-central
+export GECKO_OBJDIR=/path/to/mozilla-central/objdir-gonk
+\end{lstlisting}
+		\item Configure for the Flame \\
+\begin{lstlisting}[style=BashInputStyle]
+./config.sh flame-kk
+\end{lstlisting}
+		\item Build!
+\begin{lstlisting}[style=BashInputStyle]
+./build.sh
+\end{lstlisting}
+		\item Flash onto the Device
+\begin{lstlisting}[style=BashInputStyle]
+./flash.sh
+\end{lstlisting}
+		\end{itemize}
+		\end{enumerate}
+		
+\subsubsection{Running Our Test Application}
+Once you have built for any of the platforms testing our application running our test application is as simple as opening the  web browser you just built and navigate to: \\ (\href{http://ivantjiam.github.io/fxosu-test/}{http://ivantjiam.github.io/fxosu-test/}). 
+\subsubsection{Running Our API in the Web Console}
+It is also possible to run functions in our API via the Web Console.  For Android and Firefox OS this requires use of the Firefox WebIDE. WebIDE did not begin supporting Firefox for Android until Firefox 36.  Getting this version may require updating Firefox on your distribution.  
+\begin{enumerate}
+\item \textbf{Desktop} \\
+Running our API in Firefox for Desktop is as simple as pressing \keys{F12} or \keys{\ctrl + \shift + k} and typing any of the functions listed in the Webidl file described earlier. 
+\item \textbf{Android} \\
+To open WebIDE open Firefox on your host device and press \keys{\shift + f8}. 
+To run our API first you must get your Device/Emulator connected as a runtime to the host machine running Firefox 36 or later.  To do so 
+\begin{enumerate}
+\item Connect the Device to the host machine 
+\item Enable Remote Debugging on the Device or Emulator
+\item Enable Remote Debugging in Firefox for Android 
+\item Connect to the device in WebIDE 
+\end{enumerate}
+\begin{center}
+\includegraphics[scale=0.4]{remote-debugging-android-runtime} \\
+\includegraphics[scale=0.25]{incoming-warning} \\
+The Device will prompt you about an incoming connection. Click OK \\
+\includegraphics[scale=0.4]{remote-debugging-android-open-tabs} \\
+After the connection has been established clicking the Open App tab in WebIDE should display all of the open tabs on the device.
+Selecting any of these tabs will allow you to run any of the functions listed in our Webidl file above on the devices Web console. 
+\end{center}
+\item \textbf{Firefox OS} \\
+The process is largely the same for Firefox OS as it is for Android
+\begin{enumerate}
+\item Connect the Device to the host machine
+\pagebreak
+\item Enable Remote Debugging on the Device \\ \\
+In Firefox OS this can be done in the developers panel. You may have to enable the panel by navigating to: 
+\menu{Settings > Device information > More Information > Developer Menu Checkbox}. You can then access
+the developers men via \menu{Settings > Developer} to enable remote debugging.  \\ \\
+\begin{center}
+\includegraphics[scale=0.5]{developermenu-short} \\
+Be sure to enable for both adb and DevTools
+\end{center}
+\item Connect to the Device in WebIDE
+\end{enumerate}
+\end{enumerate}
+\pagebreak
 
 \subsection{API Documentation}
 
@@ -366,7 +560,7 @@ I learned more about the organization of teams within Mozilla, and the separatio
 I learned a lot about the importance of a design cycle such as Agile. Most of the senior design process is sort of intrinsically setup in a Waterfall design cycle, but you are free to iterate on that, running your own weekly, bi-weekly, monthly etc. Agile cycles. Our group in particular ran into this pretty hard, and we ended up changing 10 of our 24 requirements. When we originally wrote our requirements document during Fall term, we had an idea of what the project would look like, and not 4 weeks later, that idea changed significantly.
 \\\\
 \textbf{What have you learned about project management?}\\
-Other than the importance of design cycles, as I mentioned above, I learned about the importance of constant communication with your project customer. It's very possible that the ideas you have begun to spin within your own mind, and in the hive mind of the project group, could be wildly different, or even slightly misaligned from that of the project customer, and the much larger hive mind of your customers organization.
+Other than the importance of design cycles, as I mentioned above, I learned about the importance of constant communication with your project customer. It's very possible that the ideas you have begun to spin within your own mind, and in the hive mind of the project group, could be wildly different, or even slightly misaligned from that of the project customer, and the much larger hive mind of your customers organization. 
 \\\\
 \textbf{What have you learned about working in teams?}\\
 I've certainly learned about the importance of communication throughout the project. Often we would run into issues where one or more of our group members were lost, while perhaps at least one knew the way forward. Clear communication and clearing up questions is something that produces a well oiled machine.
@@ -470,7 +664,7 @@ If I could do it all over again, I would spend significantly more time researchi
 \\\\
 \textbf{XPCOM}: a cross platform component object model, similar to Microsoft COM. It has multiple language bindings, allowing XPCOM components to be used and implemented in JavaScript, Java, and Python in addition to C++. Interfaces in XPCOM are defined in a dialect of IDL called XPIDL. (\href{https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM}{https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM})
 \\\\
-\textbf{}: (\href{}{})
+\textbf{Mozilla-Central}: The central Mercurial repository for all released code by Mozilla. (\href{https://developer.mozilla.org/en-US/docs/mozilla-central}{https://developer.mozilla.org/en-US/docs/mozilla-central})
 \\\\
 \textbf{}: (\href{}{})
 \\\\
