@@ -309,18 +309,18 @@ This file handles the defining of our exposed API. In it we define the interface
 
 Finally, the WebIDL sets up 12 API functions that can be called from a web context, attached to navigator:
 \begin{itemize}
-  \item \textbf{boolean batteryLevel()}: THING
-  \item \textbf{boolean batteryCharging()}: THING
-  \item \textbf{DOMRequest recentRxTx()}: THING
-  \item \textbf{float receivedBytes(optional float lastMillisecs)}: THING
-  \item \textbf{SuccessRateObject successRate(optional float lastMillisecs)}: THING
-  \item \textbf{LatencyObject latencyInfo()}: THING
-  \item \textbf{boolean isConnectionStable(optional float lastMillisecs)}: THING
-  \item \textbf{MemoryObject memoryManager();}: THING
-  \item \textbf{float connectionType()}: THING
-  \item \textbf{boolean connectionUp()}: THING
-  \item \textbf{float connectionQuality()}: THING
-  \item \textbf{boolean mozIsNowGood(optional float level)}: THING
+  \item \textbf{boolean batteryLevel()}: Returns the battery level as a value between 0.0 and 1.0
+  \item \textbf{boolean batteryCharging()}: Returns true if the battery is charging, otherwise false
+  \item \textbf{DOMRequest recentRxTx()}: Returns a DOMRequest object describing the network statistics
+  \item \textbf{float receivedBytes(optional float lastMillisecs)}: Returns the amount of data received, measured in bytes
+  \item \textbf{SuccessRateObject successRate(optional float lastMillisecs)}: Returns a SuccessRateObject mentioned above
+  \item \textbf{LatencyObject latencyInfo()}: Returns a LatencyObject mentioned above
+  \item \textbf{boolean isConnectionStable(optional float lastMillisecs)}: Returns a Boolean value indicating the stableness of current connection
+  \item \textbf{MemoryObject memoryManager();}: Returns a MemoryObject mentioned above
+  \item \textbf{float connectionType()}: Returns a value from 0 to 7 indicating the current connection type such as Ethernet, WiFi and 4G
+  \item \textbf{boolean connectionUp()}: Returns true if network is connected, otherwise false
+  \item \textbf{float connectionQuality()}: Returns a float range from 0 to 1 which indicate the quality of current connection, where 0 is the worst and 1 is the best
+  \item \textbf{boolean mozIsNowGood(optional float level)}: Takes a integer value of 1, 2 or 3 which represents the levels of certainty and returns a Boolean value indicating whether it is a good time to make a network request
 \end{itemize}
 
 \subsubsection{dom/webidl/moz.build}
