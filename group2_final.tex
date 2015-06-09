@@ -6,6 +6,7 @@
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{menukeys}
+\usepackage{tabularx}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \graphicspath{ {images/} }
@@ -93,103 +94,40 @@ Here is our original requirements document, featuring the details of our project
 
 \subsubsection{Requirements}
 As happens in most projects, requirements change, and ours was no different. Here are the changes that were made to our requirements and why.\\\\
-\begin{tabular}{|l|l|l|l|}
+\begin{tabularx}{\textwidth}{|p{1cm}|X|X|X|}
 \hline
-\#  & Requirement 				& What Happened To It 		  & Comments \\ \hline
-4	& The API should be written & Modified 					  & The reason for this... \\
-	& in C++.					& Changed to "The API should  & \\
-	&							& be written in C++ and/or	  & \\
-	&							& JavaScript" 				  & \\ \hline
-5 	& The API should be callable& Modified 					  & The reason for this... \\
-	& by JavaScript executing in& First became "The API should& \\
-	& the DOM in a web context. & be callable by JavaScript   & \\
-	&							& executing in the window.",  & \\
-	&							& Then modified again to 	  & \\
-	&							& become "The prototype API   & \\
-	&							& should be callable by 	  & \\
-	&							& JavaScript executing in a   & \\
-	&							& web sandbox." 			  & \\ \hline
-6 	& The prototype API should  & Removed 				 	  & The reason for this... \\
-	& be able to queue tasks. 	& New requirement was "The 	  & \\
-	& 						 	& prototype API should be able& \\
-	&							& be able to access data on   & \\
-	&							& the battery level of the    & \\
-	&							& device in order to determine& \\
-	&							& if a task should be 		  & \\
-	&							& executed." 				  & \\ \hline
-7 	& The prototype API should  & Removed				 	  & The reason for this... \\
-	& be able to prioritize		& New requirement was "The 	  & \\
-	& tasks in the queue based	& protoype API should be able & \\
-	& on network, battery and 	& to access data on the 	  & \\
-	& system data.				& charging state of the device& \\
-	&							& in order to determine if a  & \\
-	&							& task should be executed."   & \\ \hline
-\end{tabular}
+\#  & Requirement 				& What Happened To It & Comments \\ \hline
+4 & The API should be written in C++ & Modified and changed to "The API should be written in C++ and/or Javascript" & Re-writing the API in a different language was unnecessary as JavaScript provided the necessary functionality for what we trying to do. \\ \hline
+5 & The API should be callable by Javascript executing in the DOM in a web context & Modified first to "The API should be callable by JavaScript executing in the window and then modified finally to "The prototype API should be callable by JavaScript executing in a web sandbox" & The change was really just clarification.  As a team we weren't 100\% sure what was meant by web context so our client changed the language slightly so it was more clear. \\ \hline
+6 & The prototype API should be able to queue tasks & Removed! New Requirement was "The prototype API should be able to access data on the battery level of the devices in order to determine if a task should be executed" & We determined that the goal of the project was not to delay or queue tasks but use device meta-data to try and determine if a network request should be attempted \\ \hline
+7 & The prototype API should be able to prioritize taks in the queue based on network, battery and system data & Removed! New Requirement was "The prototype API should be able to access data on te charging state of the device in order to determine if a task should be executed" & We determined that the goal of the project was not to queue tasks but use device meta-data to determine is a network request should be attempted \\ \hline
+\end{tabularx}
 \pagebreak
 
-\begin{tabular}{|l|l|l|l|}
+\begin{tabularx}{\textwidth}{|p{1cm}|X|X|X|}
 \hline
 \#  & Requirement 				& What Happened To It 		  & Comments \\ \hline
-8 	& The prototype API should	& Modified 					  & The reason for this... \\
-	& be developer configurable,& Changed to "The prototype   & \\
-	& to provide a force		& API should be developer 	  & \\
-	& execution of a task after	& configurable, to provide a  & \\
-	& a period of time.			& level of certainty about 	  & \\
-	&							& network quality."			  & \\ \hline
-9 	& The prototype API should  & Modified 				      & The reason for this... \\
-	& be able to function  	   	& Changed to "The prototype   & \\
-	& without error on Firefox  & API should be able to 	  & \\
-	& OS, Firefox for Android,	& function without error on   & \\
-	& and Firefox for Desktop.	& Firefox for Desktop."		  & \\ \hline
-10 	& The API should be able to & Modified 				      & The reason for this... \\
-	& access data on the quality& Changed to "The prototype   & \\ 
-	& of the network in order to& API should be able to access& \\
-	& determine if a task should& latency-related network     & \\
-	& be executed.				& information to determine if & \\
-	&							& a task should be executed." & \\ \hline
-16 	& The API should be able to & Removed					  & The reason for this... \\
-	& queue and postpone tasks	& New requirement was "The API& \\
-	& from being dispatched.	& should be able to access 	  & \\
-	&							& latency-related network 	  & \\
-	&							& information to determine if & \\
-	&							& a task should be executed." & \\ \hline
-17 	& The API should be able to & Removed 					  & The reason for this... \\
-	& prioritize queued tasks 	& New requirement was "The API& \\
-	& based on accessible data  & should take into account the& \\
-	& about the device and the  & type of network connection, & \\
-	& environment.				& whether it be wifi, cellular& \\
-	&							& data, etc."				  & \\ \hline
-18	& The API should have a 	& Removed					  & The reason for this... \\
-	& mechanism for dispatching & New requirement was "The API& \\
-	& queued tasks.				& should be able to access 	  & \\
-	&							& data about recent tx/rx 	  & \\
-	&							& data."					  & \\ \hline
-\end{tabular}
+8 & The prototype API should be developer configurable to provide forced execution of a task after a period of time & Modified! Changed to "The prototype API should be developer configurable, to provide a level of certainty about network quality" & Because we are no longer queuing tasks, we changed the configurable option to be the level of certainty we have about whether a network request would succeed. \\ \hline
+9 & The prototype API should be able to function without error on Firefox OS, Firefox for Android, and Firefox for Desktop & Modified! Changed to "The prototype API should be able to function without error Firefox for Desktop & We determined with our client that at this early stage we were spending to much time trying to get our code working on multiple platforms instead of creating essential functionality for the API \\ \hline
+10 & The API should be able to access data on the quality of the network in order to determine if a task should be executed & Modified! Changed to "The prototype should be able ot access latency-related network information to determine if a task should be executed & This was more of a specification change.  There wasn't specific data available to us in JavaScript about the quality of the network, so instead we elected to use latency information about recently loaded web-pages to make a determination about the quality of the network. \\ \hline
+16 & The API should be able to queue and postpone tasks from being dispatched & Removed! New requirement was "The API should be able to access latency-related network information to determine if a task should be executed." & Similar to previous changes, we were no longer queuing tasks so we replaced the requirement with one that focused on using available network information to determine if a request will succeed. \\ \hline
+\end{tabularx}
 \pagebreak
 
-\begin{tabular}{|l|l|l|l|}
+\begin{tabularx}{\textwidth}{|p{1cm}|X|X|X|}
 \hline
 \#  & Requirement 				& What Happened To It 		  & Comments \\ \hline
-19 	& The API should be  	    & Modified 					  & The reason for this... \\
-	& developer configurable, to& Changed to "The API should  & \\
-	& prioritize application 	& be developer configurable,  & \\
-	& specific tasks.			& to provide a level of 	  & \\
-	&							& certainty about network 	  & \\
-	&							& quality."					  & \\ \hline
-20 	& The API should be  	    & Removed					  & The reason for this... \\
-	& developer configurable,   & New requirement was "The 	  & \\
-	& to provide a force  	    & prototype API should be able& \\
-	& execution of a task after & to access data about recent & \\
-	& a period of time.			& tx/rx data to determine if a& \\
-	&							& task should be executed."	  & \\
-	&							& Then, the requirement was   & \\
-	&							& modified to become "The 	  & \\
-	&							& prototype API should be able& \\
-	&							& to see if the device has an & \\
-	&							& internet connection to 	  & \\
-	&							& determine if a task should  & \\
-	&							& be executed."				  & \\ \hline
-\end{tabular}
+17 & The API should be able to prioritize queued tasks based on accessible data about the device and the environment & Removed! New requirement was "The API should take into account the type of network connection whether it by wifi, cellular data, etc." & Similar to previous changes, we were no longer queuing tasks so we replaced the requirement with one that focused on using available network information to determine if a network request will succeed \\ \hline
+18 & The API should have a mechanism for dispatching queued tasks. & Removed! New requirement was "The API should be able to access data about recent tx/rx data." & Similar to previous changes, we were no longer queuing tasks so we replaced the requirement with using available network data.  Using recent rx/tx data would allow us see if there had been network activity recently and if it was successful. This could be used to determine how confident we are that a network request will succeed. \\ \hline
+19 & The API should be developer configurable to prioritize application specific tasks. & Modfied! Changed to "The API should be developer configurable to provide a level of certainty about network quality." & Similar to previous changes, we were no longer queuing tasks but wanted to keep the API developer configurable.  So we elected to give developers the option to specify how certain they wanted our service to be that a network request was going to succeed. \\ \hline
+\end{tabularx}
+\pagebreak
+
+\begin{tabularx}{\textwidth}{|p{1cm}|X|X|X|}
+\hline
+\#  & Requirement 				& What Happened To It 		  & Comments \\ \hline
+20 & The API should be developer configurable to provide forced execution of a task after a period of time & Removed! New requirement was "The prototype API should be able to access data about recent rx/tx data to determine if a task should be executed." This requirement was then modified to become "The prototype API should be able to see if the device is connected to the internet to determine if a task should be executed." & Similar to previous changes, we replaced the requirement becuase we were no longer queuing tasks.  We then modified the new requirement because we discovered that recent rx/tx data was only available on Firefox OS and the prototype was being built for Firefox Desktop only.  \\ \hline
+\end{tabularx}
 \pagebreak
 
 \subsubsection{Gaant Chart}
@@ -604,7 +542,7 @@ in a sitting.  This project required large amounts of research and time to even 
 \\\\ 
 \textbf{What have you learned about project management?}\\
 I learned that over the course of a long project like this it is important to be flexible.  During the fall we got a broad view of what we thought the client was looking for out of this project. But during the Winter when we met with him up in Portland we discovered that what we had envisioned wasn't what he was looking for.  When designing software you need to be flexible and ready for things to change.
-\\\\
+\\\\\\
 \textbf{What have you learned about working in teams?}\\
 Communication is vital. We were only able to meet face to face a couple times a week which made those times extremely important. We needed to work out what progress was made as well as what needed to get done next.  This wasn't always simple as what we were working on could depend on something that another team member was working on.  Having to balance project work with work from other classes also made it important to communicate when you could or could not work on the project.  I found that the less we talked, the less that seemed to get done during that period of time.  Constant communication led to more efficient work which led to more progress.   
 \\\\
