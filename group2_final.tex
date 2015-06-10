@@ -70,9 +70,9 @@
 % What were their roles?
 % What was the role of the client(s)? (I.e., did they supervise only, or did they participate in doing development)
 
-This project was requested by Mozilla, specifically the team working on Firefox OS. Our customer during the course of our project was Dietrich Ayala, a Project Manager working on Firefox OS and a member of the Mozilla family since February 2006. Dietrich's role in our project took many forms, and evolved as what we needed did so. Initially, he helped on board us to the Firefox OS platform, providing us with plenty of documentation to wrap our heads around, and once we have devoured this information, he was quick to setup meeting with members form the Firefox OS networking team. Throughout the year Dietrich was always available via IRC, Skype, Email, and Cell, whenever we needed him. And if he could not answer a question for us, he knew who could.
+This project was requested by Mozilla, specifically the team working on Firefox OS. Our customer during the course of our project was Dietrich Ayala, a Project Manager working on Firefox OS and a member of the Mozilla family since February 2006. Dietrich's role in our project took many forms, and evolved as what we needed did so. Initially, he helped on board us to the Firefox OS platform, providing us with plenty of documentation to wrap our heads around, and once we have devoured this information, he was quick to setup meeting with members from the Firefox OS networking team. Throughout the year Dietrich was always available via IRC, Skype, Email, and Cell, whenever we needed him. And if he could not answer a question for us, he knew who could.
 \\\\
-The members of our team were John Zeller, Pok Yan Tjiam, and Jonathan McNeil. John Zeller, having worked with Mozilla for over a year as an intern and contractor, acted as a de facto team lead during the course of the project. Pok Yan Tjiam worked on \_\_\_. Jonathan McNeil worked on \_\_\_.
+The members of our team were John Zeller, Pok Yan Tjiam, and Jonathan McNeil. John Zeller, having worked with Mozilla for over a year as an intern and contractor, acted as a de facto team lead during the course of the project. Pok Yan Tjiam worked on API testing. Jonathan McNeil worked on \_\_\_.
 \\\\
 The purpose of this project was to help work towards giving developers a tool that allows them to avoid the typical environment agnostic network request paradigm. As it currently stands, most developers create apps with little to no information about the quality of the network. In their apps, they typically run network requests in a dumb loop, which simply tries continually until the request succeeds. This is wasteful in terms of both battery and data, and overloads an often times already overloaded network.
 \\\\
@@ -100,7 +100,7 @@ As happens in most projects, requirements change, and ours was no different. Her
 4 & The API should be written in C++ & Modified and changed to "The API should be written in C++ and/or Javascript" & Re-writing the API in a different language was unnecessary as JavaScript provided the necessary functionality for what we trying to do. \\ \hline
 5 & The API should be callable by Javascript executing in the DOM in a web context & Modified first to "The API should be callable by JavaScript executing in the window and then modified finally to "The prototype API should be callable by JavaScript executing in a web sandbox" & The change was really just clarification.  As a team we weren't 100\% sure what was meant by web context so our client changed the language slightly so it was more clear. \\ \hline
 6 & The prototype API should be able to queue tasks & Removed! New Requirement was "The prototype API should be able to access data on the battery level of the devices in order to determine if a task should be executed" & We determined that the goal of the project was not to delay or queue tasks but use device meta-data to try and determine if a network request should be attempted \\ \hline
-7 & The prototype API should be able to prioritize taks in the queue based on network, battery and system data & Removed! New Requirement was "The prototype API should be able to access data on te charging state of the device in order to determine if a task should be executed" & We determined that the goal of the project was not to queue tasks but use device meta-data to determine is a network request should be attempted \\ \hline
+7 & The prototype API should be able to prioritize tasks in the queue based on network, battery and system data & Removed! New Requirement was "The prototype API should be able to access data on te charging state of the device in order to determine if a task should be executed" & We determined that the goal of the project was not to queue tasks but use device meta-data to determine is a network request should be attempted \\ \hline
 \end{tabularx}
 \pagebreak
 
@@ -108,7 +108,7 @@ As happens in most projects, requirements change, and ours was no different. Her
 \hline
 \#  & Requirement 				& What Happened To It 		  & Comments \\ \hline
 8 & The prototype API should be developer configurable to provide forced execution of a task after a period of time & Modified! Changed to "The prototype API should be developer configurable, to provide a level of certainty about network quality" & Because we are no longer queuing tasks, we changed the configurable option to be the level of certainty we have about whether a network request would succeed. \\ \hline
-9 & The prototype API should be able to function without error on Firefox OS, Firefox for Android, and Firefox for Desktop & Modified! Changed to "The prototype API should be able to function without error Firefox for Desktop & We determined with our client that at this early stage we were spending to much time trying to get our code working on multiple platforms instead of creating essential functionality for the API \\ \hline
+9 & The prototype API should be able to function without error on Firefox OS, Firefox for Android, and Firefox for Desktop & Modified! Changed to "The prototype API should be able to function without error Firefox for Desktop & We determined with our client that at this early stage we were spending too much time trying to get our code working on multiple platforms instead of creating essential functionality for the API \\ \hline
 10 & The API should be able to access data on the quality of the network in order to determine if a task should be executed & Modified! Changed to "The prototype should be able ot access latency-related network information to determine if a task should be executed & This was more of a specification change.  There wasn't specific data available to us in JavaScript about the quality of the network, so instead we elected to use latency information about recently loaded web-pages to make a determination about the quality of the network. \\ \hline
 16 & The API should be able to queue and postpone tasks from being dispatched & Removed! New requirement was "The API should be able to access latency-related network information to determine if a task should be executed." & Similar to previous changes, we were no longer queuing tasks so we replaced the requirement with one that focused on using available network information to determine if a request will succeed. \\ \hline
 \end{tabularx}
@@ -257,7 +257,7 @@ Finally, the WebIDL sets up 12 API functions that can be called from a web conte
   \item \textbf{MemoryObject memoryManager();}: Returns a MemoryObject mentioned above
   \item \textbf{float connectionType()}: Returns a value from 0 to 7 indicating the current connection type such as Ethernet, WiFi and 4G
   \item \textbf{boolean connectionUp()}: Returns true if network is connected, otherwise false
-  \item \textbf{float connectionQuality()}: Returns a float range from 0 to 1 which indicate the quality of current connection, where 0 is the worst and 1 is the best
+  \item \textbf{float connectionQuality()}: Returns a float range from 0 to 1 which indicates the quality of current connection, where 0 is the worst and 1 is the best
   \item \textbf{boolean mozIsNowGood(optional float level)}: Takes a integer value of 1, 2 or 3 which represents the levels of certainty and returns a Boolean value indicating whether it is a good time to make a network request
 \end{itemize}
 
@@ -359,7 +359,7 @@ sudo service udev restart
 \end{lstlisting}
 The final command should launch the newly built Firefox Browser with our service built it!
 		\item \textbf{Android} \\ \\
-		Android requires configuring to build depending on the target device.  	This is done using a configuration file called .mozconfi in the root of the mozilla-central directory.  This file is automatically generated for building desktop.  But requires some options to configure the build for android.  Create a .mozconfig text file and add the following options:
+		Android requires configuring to build depending on the target device.  	This is done using a configuration file called .mozconfig in the root of the mozilla-central directory.  This file is automatically generated for building desktop.  But requires some options to configure the build for android.  Create a .mozconfig text file and add the following options:
 		
 		\begin{lstlisting}[style=BashInputStyle]
 # Build Firefox for Android:
@@ -698,13 +698,5 @@ If I was going to do it all over I would of spent a lot more time and effort dur
 \textbf{XPCOM}: a cross platform component object model, similar to Microsoft COM. It has multiple language bindings, allowing XPCOM components to be used and implemented in JavaScript, Java, and Python in addition to C++. Interfaces in XPCOM are defined in a dialect of IDL called XPIDL.\\(\href{https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM}{https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM})
 \\\\
 \textbf{Mozilla-Central}: The central Mercurial repository for all released code by Mozilla.\\(\href{https://developer.mozilla.org/en-US/docs/mozilla-central}{https://developer.mozilla.org/en-US/docs/mozilla-central})
-\\\\
-\textbf{}: (\href{}{})
-\\\\
-\textbf{}: (\href{}{})
-\\\\
-\textbf{}: (\href{}{})
-\\\\
-\textbf{}: (\href{}{})
 
 \end{document}
