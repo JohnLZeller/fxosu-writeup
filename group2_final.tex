@@ -72,7 +72,7 @@
 
 This project was requested by Mozilla, specifically the team working on Firefox OS. Our customer during the course of our project was Dietrich Ayala, a Project Manager working on Firefox OS and a member of the Mozilla family since February 2006. Dietrich's role in our project took many forms, and evolved as what we needed did so. Initially, he helped on board us to the Firefox OS platform, providing us with plenty of documentation to wrap our heads around, and once we have devoured this information, he was quick to setup meeting with members from the Firefox OS networking team. Throughout the year Dietrich was always available via IRC, Skype, Email, and Cell, whenever we needed him. And if he could not answer a question for us, he knew who could.
 \\\\
-The members of our team were John Zeller, Pok Yan Tjiam, and Jonathan McNeil. John Zeller, having worked with Mozilla for over a year as an intern and contractor, acted as a de facto team lead during the course of the project. Pok Yan Tjiam worked on API testing. Jonathan McNeil helped with the development of the API as well as building and testing on Firefox for Android and Desktop.
+The members of our team were John Zeller, Pok Yan Tjiam, and Jonathan McNeil. John Zeller, having worked with Mozilla for over a year as an intern and contractor, acted as a de facto team lead during the course of the project. Pok Yan Tjiam worked on API testing, blog posts and project site updates. Jonathan McNeil helped with the development of the API as well as building and testing on Firefox for Android and Desktop.
 \\\\
 The purpose of this project was to help work towards giving developers a tool that allows them to avoid the typical environment agnostic network request paradigm. As it currently stands, most developers create apps with little to no information about the quality of the network. In their apps, they typically run network requests in a dumb loop, which simply tries continually until the request succeeds. This is wasteful in terms of both battery and data, and overloads an often times already overloaded network.
 \\\\
@@ -130,25 +130,25 @@ As happens in most projects, requirements change, and ours was no different. Her
 \end{tabularx}
 \pagebreak
 
-\subsubsection{Gaant Chart}
-Here is the final Gaant chart for how our project timeline actually turned out.
+\subsubsection{Gantt Chart}
+Here is the final Gantt chart for how our project timeline actually turned out.
 
 \begin{figure}[h!]
   \centering
 	\includegraphics[scale=0.3]{finalgaant1.png}
-  \caption{1 of 3: The final Gaant chart for how our project timeline actually turned out.}
+  \caption{1 of 3: The final Gantt chart for how our project timeline actually turned out.}
 \end{figure}
 \begin{figure}[h!]
   \centering
 	\includegraphics[scale=0.3]{finalgaant2.png}
-  \caption{2 of 3: The final Gaant chart for how our project timeline actually turned out.}
+  \caption{2 of 3: The final Gantt chart for how our project timeline actually turned out.}
 \end{figure}
 \pagebreak
 
 \begin{figure}[h!]
   \centering
 	\includegraphics[scale=0.3]{finalgaant3.png}
-  \caption{3 of 3: The final Gaant chart for how our project timeline actually turned out.}
+  \caption{3 of 3: The final Gantt chart for how our project timeline actually turned out.}
 \end{figure}
 \pagebreak
 
@@ -173,7 +173,7 @@ This is the final project poster that we used when demoing our project at the En
 % Are there any special hardware, OS, or runtime requirements to run your software?
 % Any user guides, API documentation, etc.
 \subsection{Overview}
-Our project took shape through 4 distinct phases: Research, Prototype, Implementation, and Test App. Our research phase took us through understanding fundamental Firefox paradigms like XPCOM and foundational concepts like IPC, JavaScript Runtime, and WebIDL. Our research phase stayed active throughout most of our Prototype and Implementation phases, as we learned new concepts that were necessary for us to accomplish the design we'd set out to build. When building our prototype, we learned a lot about what has to be built into the core of Firefox, as opposed to being tested in a priveleged JavaScript add-on. Implementation brought a lot of its' own challanges, smoothed over by the things learned during prototyping. And finally, our test app helped to highlight the strengths and weaknesses of the final implementation that we had come up with.
+Our project took shape through 4 distinct phases: Research, Prototype, Implementation, and Test App. Our research phase took us through understanding fundamental Firefox paradigms like XPCOM and foundational concepts like IPC, JavaScript Runtime, and WebIDL. Our research phase stayed active throughout most of our Prototype and Implementation phases, as we learned new concepts that were necessary for us to accomplish the design we'd set out to build. When building our prototype, we learned a lot about what has to be built into the core of Firefox, as opposed to being tested in a privileged JavaScript add-on. Implementation brought a lot of its' own challenges, smoothed over by the things learned during prototyping. And finally, our test app helped to highlight the strengths and weaknesses of the final implementation that we had come up with.
 \pagebreak
 
 \subsection{Structure}
@@ -199,7 +199,7 @@ This file required modification to include references to our new XPCOM component
 This file required modification to list the specific permissions given to the XPCOM component.
 
 \subsubsection{dom/fxosu/FxOSUService.js}
-This file holds the bulk of the work that we've done in this project. They work can be divided into two main parts.  There are a couple of global functions and variable which are used for IPC from NetworkStatsService.js and a prototype of our XPCOM Component called FxOSUService.  A subset of the functions in this prototype are then exposed as navigator properties.  These can be be seen in FxOSUService.webidl section below.  Here are function prototypes for this file as well as brief descriptions as to what they do.
+This file holds the bulk of the work that we've done in this project. They work can be divided into two main parts.  There are a couple of global functions and variable which are used for IPC from NetworkStatsService.js and a prototype of our XPCOM Component called FxOSUService.  A subset of the functions in this prototype are then exposed as navigator properties.  These can be seen in FxOSUService.webidl section below.  Here are function prototypes for this file as well as brief descriptions as to what they do.
 \begin{itemize}
 \item \textbf{Global Functions}
 \begin{lstlisting}[language=JavaScript]
@@ -243,7 +243,7 @@ Returns a dictionary object that holds the success rate, \# of successes, and nu
 \begin{lstlisting}[language=JavaScript]
 FxOSUService.successRateRecent(num)
 \end{lstlisting}
-Returns a dictionary object that holds the success rate, \# of successes, and number of attempts for the last number of requests. It is used internally to determine the quality of the network for a specific group of requests.
+Returns a dictionary object that holds the success rate, \# of successes, and number of attempts for the last num number of requests. It is used internally to determine the quality of the network for a specific group of requests.
 \begin{lstlisting}[language=JavaScript]
 FxOSUService.IsConnectionStable(lastMillisecs)
 \end{lstlisting}
