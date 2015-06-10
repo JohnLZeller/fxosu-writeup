@@ -49,7 +49,6 @@ dictionary MemoryObject
 interface FxOSUService {
   boolean batteryLevel();
   boolean batteryCharging();
-  DOMRequest recentRxTx();
   float receivedBytes(optional float lastMillisecs);
   SuccessRateObject successRate(optional float lastMillisecs);
   LatencyObject latencyInfo();

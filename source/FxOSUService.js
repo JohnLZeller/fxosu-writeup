@@ -85,38 +85,6 @@ FxOSUService.prototype = {
   init: function(aWindow) {
     this.window = aWindow;
 
-    // Disabling - Not necessary for testing
-    /*
-    // Set navigator.mozNetworkStats to null.
-    if (!Services.prefs.getBoolPref("dom.mozNetworkStats.enabled")) {
-      return null;
-    }
-
-    let principal = this.window.document.nodePrincipal;
-    let secMan = Services.scriptSecurityManager;
-    let perm = principal == secMan.getSystemPrincipal() ?
-                 Ci.nsIPermissionManager.ALLOW_ACTION :
-                 Services.perms.testExactPermissionFromPrincipal(principal, "networkstats-manage");
-
-    // Only pages with perm set can use the netstats.
-    this.hasPrivileges = perm == Ci.nsIPermissionManager.ALLOW_ACTION;
-
-    if (!this.hasPrivileges) {
-      Services.perms.addFromPrincipal(principal, "networkstats-manage", Ci.nsIPermissionManager.ALLOW_ACTION)
-    }
-
-    // Init app properties.
-    let appsService = Cc["@mozilla.org/AppsService;1"]
-                        .getService(Ci.nsIAppsService);
-
-    this.manifestURL = appsService.getManifestURLByLocalId(principal.appId);
-
-    let isApp = !!this.manifestURL.length;
-    if (isApp) {
-      this.pageURL = principal.URI.spec;
-    }
-    */
-
     // Setup Observers
     Services.obs.addObserver(FxOSUService, "xpcom-shutdown", false);
     Services.obs.addObserver(FxOSUService, "memory-pressure", false);
@@ -137,7 +105,7 @@ FxOSUService.prototype = {
     }
   },  
 
-  //Callable function which displays the current memory usage. Is automatically called when a low-memory event occurs 
+  // Callable function which displays the current memory usage. Is automatically called when a low-memory event occurs 
   memoryManager: function() {
     this.window.console.log("Resident: " + lastMemEventRes + " Explicit: " + lastMemEventExplicit);
     return {explicit: memoryReportManager.explicit, 
@@ -179,9 +147,6 @@ FxOSUService.prototype = {
   },
 
   receivedBytes: function(lastMillisecs) {
-    // TODO: Does NOT account for the fact that a response will not be had if the connection is broken?
-    // TODO: Needs bytes attempted
-
     var end = new Date();
     lastMillisecs = typeof lastMillisecs !== 'undefined' ? lastMillisecs : end.getTime();
     var start = new Date(end - lastMillisecs);
@@ -203,8 +168,6 @@ FxOSUService.prototype = {
    * good to go, we should have the same number of each.
    */
   successRate: function(lastMillisecs) {
-    // TODO: Check that
-
     var end = new Date();
     lastMillisecs = typeof lastMillisecs !== 'undefined' ? lastMillisecs : end.getTime();
     var start = new Date(end - lastMillisecs);
@@ -369,8 +332,6 @@ FxOSUService.prototype = {
         return 1.00; // so we don't block
     }
   },
-
-  // TODO: Add a function that let's you set a global waitSecs variable for mozIsNowGood
 
   mozIsNowGood: function(level) {
     level = typeof level !== 'undefined' ? level : 2;

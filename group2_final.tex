@@ -186,8 +186,7 @@ There are almost 4 million lines of code in Firefox, and our project barely scra
 \end{figure}
 \pagebreak
 
-\subsection{Source Code}
-Here is a description of each of the files used in our project.
+Our API is added into the core of Gecko, allowing it to be easily added to any platform that Firefox is compiled for, assuming of course that there are no conflicts between our source code functionalty and the compiled platform implementation. Here is an explanation about what each piece of this source code structure is for.
 
 \subsubsection{b2g/installer/package-manifest.in}
 This file required modification to include references to our new XPCOM component. This is necessary when compiling Firefox OS; B2G (Boot 2 Gecko) contains the core which we continually refer to as Gecko.
@@ -249,7 +248,6 @@ Finally, the WebIDL sets up 12 API functions that can be called from a web conte
 \begin{itemize}
   \item \textbf{boolean batteryLevel()}: Returns the battery level as a value between 0.0 and 1.0
   \item \textbf{boolean batteryCharging()}: Returns true if the battery is charging, otherwise false
-  \item \textbf{DOMRequest recentRxTx()}: Returns a DOMRequest object describing the network statistics
   \item \textbf{float receivedBytes(optional float lastMillisecs)}: Returns the amount of data received, measured in bytes
   \item \textbf{SuccessRateObject successRate(optional float lastMillisecs)}: Returns a SuccessRateObject mentioned above
   \item \textbf{LatencyObject latencyInfo()}: Returns a LatencyObject mentioned above
@@ -270,6 +268,9 @@ This file lists references to interfaces and the directory names of all XPCOM co
 \subsubsection{mobile/android/installer/package-manifest.in}
 This file required modification to include references to our new XPCOM component. This is necessary when compiling Firefox for Android.
 \pagebreak
+
+\subsection{Theory of Operation}
+Our API, first and foremost, is meant to provide user-facing capability in the form of a web API.
 
 \subsection{Building/Running from Source}
 Running our project requires building a custom version of Firefox for the destination platform.  Our code 
