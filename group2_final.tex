@@ -454,7 +454,80 @@ Be sure to enable for both adb and DevTools
 \pagebreak
 
 \subsection{API Documentation}
-
+This Section provides prototypes of the functions in our Service (both internal and external) as well as brief descriptions as to what they do.
+\begin{itemize}
+\item \subsubsection{Global Functions}
+\begin{lstlisting}[language=JavaScript]
+importFactory(contractIdentification, interfaceName)
+\end{lstlisting}
+This function returns returns either an instance of an XPCOM component or a reference so and XPCOM service.  It is used internally by our Service to retrieve various XPCOM services which we need data from such as the Memory Reporter Manager and Network Link Service.  \\ 
+\begin{lstlisting}[language=JavaScript]
+receiveMessage(aData)
+\end{lstlisting}
+This function is used to pass information between processes in the browser.  Our service uses this to receive messages from the Network Statistics Service to get information on recent network requests preformed on the device.  Unfortunately, at this point Network Statistics Service is only available on Firefox OS. 
+\item \subsubsection{FxOSUService Functions}
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.init()
+\end{lstlisting}  
+This function is automatically called upon application startup.  It is used to register observers for memory pressure events.  These allow our service to be notified when the device has an allocation failure or is running low on memory.  \\
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.observe(aSubject, aTopic, aData)
+\end{lstlisting} 
+This is the internal function used by the XPCOM observers service to provide notifications for registered observers. For example, when a low memory event occurs.  This function would be invoked by the observer service with a topic of "memory pressure".  This then allows our Service to record when the event occurred and what the current memory usage is.  We also get notified when the browser is shutting down so that we can clean up. \\
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.MemoryManager()
+\end{lstlisting} 
+This fucntion calls the Memory Reporter XPCOM service to see what the current memory usage is.  It returns a dictionary containing the current Explicit and Resident memory usage numbers (in bytes).  Explicit memory usage is the amount of memory that has been explicitly allocated by calls to malloc or new.  Resident memory usage is the amount of physical memory is being used on the device by Firefox.  \\
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.numRequests(lastMillisecs)
+\end{lstlisting}  
+This function retrieves and counts the number of network requests that have been made in lastMillisecs milliseconds.  It is used internally to determine the success rate of network requests over a period of time.  
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.numResposes(lastMilisecs)
+\end{lstlisting} 
+This function retrieves and counts the number of network responses have been received in lastMillisecs
+milliseconds.  It is used internally to determine the success rate of network requests over a period of time.
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.receivedBytes(lastMillisecs)
+\end{lstlisting}
+This function returns the number of Bytes received in lastMillisecs milliseconds.  It is used internally to determine how much recent network activity there has been.  
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.successRate(lastMillisecs)
+\end{lstlisting}
+Returns a dictionary object that holds the success rate, \# of successes, and number of attempts for the lastMillisecs milliseconds.  It is used internally to determine the quality of the network over a period of time
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.successRateRecent(num)
+\end{lstlisting}
+Returns a dictionary object that holds the success rate, \# of successes, and number of attempts for the last num number of requests. It is used internally to determine the quality of the network for a specific group of requests.
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.IsConnectionStable(lastMillisecs)
+\end{lstlisting}
+This function returns a boolean value corresponding to whether the network has been stable over lastMillisecs milliseconds. A "Stable" connection is determined by no network requests failing over that period of time.  
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.batterylevel()
+\end{lstlisting}
+Returns the device's current battery level as a float value between 0 and 1.  
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.batterycharging()
+\end{lstlisting}
+Returns a boolean corresponding to whether the device is currently charging.  
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.latencyInfo()
+\end{lstlisting}
+Returns a dictionary object with latency times (in ms) for various stages of the request cycle as described in section 5.3.8
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.connectionType()
+\end{lstlisting}  
+Was supposed to use the Network Link Service to return the type of network (be in wifi, LTE, 3G, etc) But the functionality was intentionally disabled for security reasons.  At this time is returns 0 for LINK\_TYPE\_UNKNOWN. 
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.connectionUp()
+\end{lstlisting}
+Returns a boolean value corresponding to whether or not the device is currently has an active network connection. 
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.mozIsNowGood(level)
+\end{lstlisting}
+The primary function for our service which uses the device data we have access to using the functions above which provides a boolean interpreted as a go or no-go for three different levels of certainty about a network quality. Level 1 (highest) requires that no network requests have failed recently and that the device is currently plugged in.  Level 2 (moderate) returns false if the battery is not charging, the connection is not stable and the battery level is less that 40\% or if the battery is not charging and the battery is less than 30\% or if the success rate or recent network requests is less than 50\%. Level 3 (low) returns false if the connection is not stable and the battery is less than 20\% or if the battery is less then 10\% or if the success rate of recent requests is less than 5\%.
+\end{itemize}
 \pagebreak
 
 \section{Learning New Technology}
