@@ -72,7 +72,7 @@
 
 This project was requested by Mozilla, specifically the team working on Firefox OS. Our customer during the course of our project was Dietrich Ayala, a Project Manager working on Firefox OS and a member of the Mozilla family since February 2006. Dietrich's role in our project took many forms, and evolved as what we needed did so. Initially, he helped on board us to the Firefox OS platform, providing us with plenty of documentation to wrap our heads around, and once we have devoured this information, he was quick to setup meeting with members from the Firefox OS networking team. Throughout the year Dietrich was always available via IRC, Skype, Email, and Cell, whenever we needed him. And if he could not answer a question for us, he knew who could.
 \\\\
-The members of our team were John Zeller, Pok Yan Tjiam, and Jonathan McNeil. John Zeller, having worked with Mozilla for over a year as an intern and contractor, acted as a de facto team lead during the course of the project. Pok Yan Tjiam worked on API testing, blog posts and project site updates. Jonathan McNeil helped with the development of the API as well as building and testing on Firefox for Android and Desktop.
+The members of our team were John Zeller, Pok Yan Tjiam, and Jonathan McNeil. John Zeller, having worked with Mozilla for over a year as an intern and contractor, acted as a de facto team lead during the course of the project. Pok Yan Tjiam worked on API testing. Jonathan McNeil helped with the development of the API as well as building and testing on Firefox for Android and Desktop.
 \\\\
 The purpose of this project was to help work towards giving developers a tool that allows them to avoid the typical environment agnostic network request paradigm. As it currently stands, most developers create apps with little to no information about the quality of the network. In their apps, they typically run network requests in a dumb loop, which simply tries continually until the request succeeds. This is wasteful in terms of both battery and data, and overloads an often times already overloaded network.
 \\\\
@@ -130,25 +130,25 @@ As happens in most projects, requirements change, and ours was no different. Her
 \end{tabularx}
 \pagebreak
 
-\subsubsection{Gantt Chart}
-Here is the final Gantt chart for how our project timeline actually turned out.
+\subsubsection{Gaant Chart}
+Here is the final Gaant chart for how our project timeline actually turned out.
 
 \begin{figure}[h!]
   \centering
 	\includegraphics[scale=0.3]{finalgaant1.png}
-  \caption{1 of 3: The final Gantt chart for how our project timeline actually turned out.}
+  \caption{1 of 3: The final Gaant chart for how our project timeline actually turned out.}
 \end{figure}
 \begin{figure}[h!]
   \centering
 	\includegraphics[scale=0.3]{finalgaant2.png}
-  \caption{2 of 3: The final Gantt chart for how our project timeline actually turned out.}
+  \caption{2 of 3: The final Gaant chart for how our project timeline actually turned out.}
 \end{figure}
 \pagebreak
 
 \begin{figure}[h!]
   \centering
 	\includegraphics[scale=0.3]{finalgaant3.png}
-  \caption{3 of 3: The final Gantt chart for how our project timeline actually turned out.}
+  \caption{3 of 3: The final Gaant chart for how our project timeline actually turned out.}
 \end{figure}
 \pagebreak
 
@@ -173,7 +173,7 @@ This is the final project poster that we used when demoing our project at the En
 % Are there any special hardware, OS, or runtime requirements to run your software?
 % Any user guides, API documentation, etc.
 \subsection{Overview}
-Our project took shape through 4 distinct phases: Research, Prototype, Implementation, and Test App. Our research phase took us through understanding fundamental Firefox paradigms like XPCOM and foundational concepts like IPC, JavaScript Runtime, and WebIDL. Our research phase stayed active throughout most of our Prototype and Implementation phases, as we learned new concepts that were necessary for us to accomplish the design we'd set out to build. When building our prototype, we learned a lot about what has to be built into the core of Firefox, as opposed to being tested in a privileged JavaScript add-on. Implementation brought a lot of its' own challenges, smoothed over by the things learned during prototyping. And finally, our test app helped to highlight the strengths and weaknesses of the final implementation that we had come up with.
+Our project took shape through 4 distinct phases: Research, Prototype, Implementation, and Test App. Our research phase took us through understanding fundamental Firefox paradigms like XPCOM and foundational concepts like IPC, JavaScript Runtime, and WebIDL. Our research phase stayed active throughout most of our Prototype and Implementation phases, as we learned new concepts that were necessary for us to accomplish the design we'd set out to build. When building our prototype, we learned a lot about what has to be built into the core of Firefox, as opposed to being tested in a priveleged JavaScript add-on. Implementation brought a lot of its' own challanges, smoothed over by the things learned during prototyping. And finally, our test app helped to highlight the strengths and weaknesses of the final implementation that we had come up with.
 \pagebreak
 
 \subsection{Structure}
@@ -186,7 +186,8 @@ There are almost 4 million lines of code in Firefox, and our project barely scra
 \end{figure}
 \pagebreak
 
-Our API is added into the core of Gecko, allowing it to be easily added to any platform that Firefox is compiled for, assuming of course that there are no conflicts between our source code functionalty and the compiled platform implementation. Here is an explanation about what each piece of this source code structure is for.
+\subsection{Source Code}
+Here is a description of each of the files used in our project.
 
 \subsubsection{b2g/installer/package-manifest.in}
 This file required modification to include references to our new XPCOM component. This is necessary when compiling Firefox OS; B2G (Boot 2 Gecko) contains the core which we continually refer to as Gecko.
@@ -198,7 +199,80 @@ This file required modification to include references to our new XPCOM component
 This file required modification to list the specific permissions given to the XPCOM component.
 
 \subsubsection{dom/fxosu/FxOSUService.js}
-This file holds the bulk of the work that we've done in this project.
+This file holds the bulk of the work that we've done in this project. They work can be divided into two main parts.  There are a couple of global functions and variable which are used for IPC from NetworkStatsService.js and a prototype of our XPCOM Component called FxOSUService.  A subset of the functions in this prototype are then exposed as navigator properties.  These can be be seen in FxOSUService.webidl section below.  Here are function prototypes for this file as well as brief descriptions as to what they do.
+\begin{itemize}
+\item \textbf{Global Functions}
+\begin{lstlisting}[language=JavaScript]
+importFactory(contractIdentification, interfaceName)
+\end{lstlisting}
+This function returns either an instance of an XPCOM component or a reference so and XPCOM service.  It is used internally by our Service to retrieve various XPCOM services which we need data from such as the Memory Reporter Manager and Network Link Service.  \\ 
+\begin{lstlisting}[language=JavaScript]
+receiveMessage(aData)
+\end{lstlisting}
+This function is used to pass information between processes in the browser.  Our service uses this to receive messages from the Network Statistics Service to get information on recent network requests preformed on the device.  Unfortunately, at this point Network Statistics Service is only available on Firefox OS. 
+\item \textbf{FxOSUService Functions}
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.init()
+\end{lstlisting}  
+This function is automatically called upon application startup.  It is used to register observers for memory pressure events.  These allow our service to be notified when the device has an allocation failure or is running low on memory.  \\
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.observe(aSubject, aTopic, aData)
+\end{lstlisting} 
+This is the internal function used by the XPCOM observers service to provide notifications for registered observers. For example, when a low memory event occurs.  This function would be invoked by the observer service with a topic of "memory pressure".  This then allows our Service to record when the event occurred and what the current memory usage is.  We also get notified when the browser is shutting down so that we can clean up. \\
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.MemoryManager()
+\end{lstlisting} 
+This function calls the Memory Reporter XPCOM service to see what the current memory usage is.  It returns a dictionary containing the current Explicit and Resident memory usage numbers (in bytes).  Explicit memory usage is the amount of memory that has been explicitly allocated by calls to malloc or new.  Resident memory usage is the amount of physical memory is being used on the device by Firefox.  \\
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.numRequests(lastMillisecs)
+\end{lstlisting}  
+This function retrieves and counts the number of network requests that have been made in lastMillisecs milliseconds.  It is used internally to determine the success rate of network requests over a period of time.  
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.numResposes(lastMilisecs)
+\end{lstlisting} 
+This function retrieves and counts the number of network responses have been received in lastMillisecs
+milliseconds.  It is used internally to determine the success rate of network requests over a period of time.
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.receivedBytes(lastMillisecs)
+\end{lstlisting}
+This function returns the number of Bytes received in lastMillisecs milliseconds.  It is used internally to determine how much recent network activity there has been.  
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.successRate(lastMillisecs)
+\end{lstlisting}
+Returns a dictionary object that holds the success rate, \# of successes, and number of attempts for the lastMillisecs milliseconds.  It is used internally to determine the quality of the network over a period of time
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.successRateRecent(num)
+\end{lstlisting}
+Returns a dictionary object that holds the success rate, \# of successes, and number of attempts for the last number of requests. It is used internally to determine the quality of the network for a specific group of requests.
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.IsConnectionStable(lastMillisecs)
+\end{lstlisting}
+This function returns a boolean value corresponding to whether the network has been stable over lastMillisecs milliseconds. A "Stable" connection is determined by no network requests failing over that period of time.  
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.batterylevel()
+\end{lstlisting}
+Returns the device's current battery level as a float value between 0 and 1.  
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.batterycharging()
+\end{lstlisting}
+Returns a boolean corresponding to whether the device is currently charging.  
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.latencyInfo()
+\end{lstlisting}
+Returns a dictionary object with latency times (in ms) for various stages of the request cycle as described in section 5.3.8
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.connectionType()
+\end{lstlisting}  
+Was supposed to use the Network Link Service to return the type of network (be in wifi, LTE, 3G, etc) But the functionality was intentionally disabled for security reasons.  At this time is returns 0 for LINK\_TYPE\_UNKNOWN. 
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.connectionUp()
+\end{lstlisting}
+Returns a boolean value corresponding to whether or not the device is currently has an active network connection. 
+\begin{lstlisting}[language=JavaScript]
+FxOSUService.mozIsNowGood(level)
+\end{lstlisting}
+The primary function for our service which uses the device data we have access to using the functions above which provides a boolean interpreted as a go or no-go for three different levels of certainty about a network quality. Level 1 (highest) requires that no network requests have failed recently and that the device is currently plugged in.  Level 2 (moderate) returns false if the battery is not charging, the connection is not stable and the battery level is less than 40\% or if the battery is not charging and the battery is less than 30\% or if the success rate or recent network requests is less than 50\%. Level 3 (low) returns false if the connection is not stable and the battery is less than 20\% or if the battery is less than 10\% or if the success rate of recent requests is less than 5\%.
+\end{itemize}
 
 \subsubsection{dom/fxosu/FxOSUService.manifest}
 This file sets the uuid for our XPCOM component, so that Gecko can handle a unique reference to the location of the component. It also sets up a name for the XPCOM component, and registers the component to be run at app startup.
@@ -248,6 +322,7 @@ Finally, the WebIDL sets up 12 API functions that can be called from a web conte
 \begin{itemize}
   \item \textbf{boolean batteryLevel()}: Returns the battery level as a value between 0.0 and 1.0
   \item \textbf{boolean batteryCharging()}: Returns true if the battery is charging, otherwise false
+  \item \textbf{DOMRequest recentRxTx()}: Returns a DOMRequest object describing the network statistics
   \item \textbf{float receivedBytes(optional float lastMillisecs)}: Returns the amount of data received, measured in bytes
   \item \textbf{SuccessRateObject successRate(optional float lastMillisecs)}: Returns a SuccessRateObject mentioned above
   \item \textbf{LatencyObject latencyInfo()}: Returns a LatencyObject mentioned above
@@ -268,9 +343,6 @@ This file lists references to interfaces and the directory names of all XPCOM co
 \subsubsection{mobile/android/installer/package-manifest.in}
 This file required modification to include references to our new XPCOM component. This is necessary when compiling Firefox for Android.
 \pagebreak
-
-\subsection{Theory of Operation}
-Our API, first and foremost, is meant to provide user-facing capability in the form of a web API.
 
 \subsection{Building/Running from Source}
 Running our project requires building a custom version of Firefox for the destination platform.  Our code 
@@ -455,80 +527,8 @@ Be sure to enable for both adb and DevTools
 \pagebreak
 
 \subsection{API Documentation}
-This Section provides prototypes of the functions in our Service (both internal and external) as well as brief descriptions as to what they do.
-\begin{itemize}
-\item \subsubsection{Global Functions}
-\begin{lstlisting}[language=JavaScript]
-importFactory(contractIdentification, interfaceName)
-\end{lstlisting}
-This function returns either an instance of an XPCOM component or a reference so and XPCOM service.  It is used internally by our Service to retrieve various XPCOM services which we need data from such as the Memory Reporter Manager and Network Link Service.  \\ 
-\begin{lstlisting}[language=JavaScript]
-receiveMessage(aData)
-\end{lstlisting}
-This function is used to pass information between processes in the browser.  Our service uses this to receive messages from the Network Statistics Service to get information on recent network requests preformed on the device.  Unfortunately, at this point Network Statistics Service is only available on Firefox OS. 
-\item \subsubsection{FxOSUService Functions}
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.init()
-\end{lstlisting}  
-This function is automatically called upon application startup.  It is used to register observers for memory pressure events.  These allow our service to be notified when the device has an allocation failure or is running low on memory.  \\
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.observe(aSubject, aTopic, aData)
-\end{lstlisting} 
-This is the internal function used by the XPCOM observers service to provide notifications for registered observers. For example, when a low memory event occurs.  This function would be invoked by the observer service with a topic of "memory pressure".  This then allows our Service to record when the event occurred and what the current memory usage is.  We also get notified when the browser is shutting down so that we can clean up. \\
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.MemoryManager()
-\end{lstlisting} 
-This function calls the Memory Reporter XPCOM service to see what the current memory usage is.  It returns a dictionary containing the current Explicit and Resident memory usage numbers (in bytes).  Explicit memory usage is the amount of memory that has been explicitly allocated by calls to malloc or new.  Resident memory usage is the amount of physical memory is being used on the device by Firefox.  \\
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.numRequests(lastMillisecs)
-\end{lstlisting}  
-This function retrieves and counts the number of network requests that have been made in lastMillisecs milliseconds.  It is used internally to determine the success rate of network requests over a period of time.  
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.numResposes(lastMilisecs)
-\end{lstlisting} 
-This function retrieves and counts the number of network responses have been received in lastMillisecs
-milliseconds.  It is used internally to determine the success rate of network requests over a period of time.
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.receivedBytes(lastMillisecs)
-\end{lstlisting}
-This function returns the number of Bytes received in lastMillisecs milliseconds.  It is used internally to determine how much recent network activity there has been.  
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.successRate(lastMillisecs)
-\end{lstlisting}
-Returns a dictionary object that holds the success rate, \# of successes, and number of attempts for the lastMillisecs milliseconds.  It is used internally to determine the quality of the network over a period of time
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.successRateRecent(num)
-\end{lstlisting}
-Returns a dictionary object that holds the success rate, \# of successes, and number of attempts for the last num number of requests. It is used internally to determine the quality of the network for a specific group of requests.
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.IsConnectionStable(lastMillisecs)
-\end{lstlisting}
-This function returns a boolean value corresponding to whether the network has been stable over lastMillisecs milliseconds. A "Stable" connection is determined by no network requests failing over that period of time.  
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.batterylevel()
-\end{lstlisting}
-Returns the device's current battery level as a float value between 0 and 1.  
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.batterycharging()
-\end{lstlisting}
-Returns a boolean corresponding to whether the device is currently charging.  
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.latencyInfo()
-\end{lstlisting}
-Returns a dictionary object with latency times (in ms) for various stages of the request cycle as described in section 5.3.8
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.connectionType()
-\end{lstlisting}  
-Was supposed to use the Network Link Service to return the type of network (be in wifi, LTE, 3G, etc) But the functionality was intentionally disabled for security reasons.  At this time is returns 0 for LINK\_TYPE\_UNKNOWN. 
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.connectionUp()
-\end{lstlisting}
-Returns a boolean value corresponding to whether or not the device is currently has an active network connection. 
-\begin{lstlisting}[language=JavaScript]
-FxOSUService.mozIsNowGood(level)
-\end{lstlisting}
-The primary function for our service which uses the device data we have access to using the functions above which provides a boolean interpreted as a go or no-go for three different levels of certainty about a network quality. Level 1 (highest) requires that no network requests have failed recently and that the device is currently plugged in.  Level 2 (moderate) returns false if the battery is not charging, the connection is not stable and the battery level is less than 40\% or if the battery is not charging and the battery is less than 30\% or if the success rate or recent network requests is less than 50\%. Level 3 (low) returns false if the connection is not stable and the battery is less than 20\% or if the battery is less than 10\% or if the success rate of recent requests is less than 5\%.
-\end{itemize}
+The functionality of our API has been heavily documented in Section 5.3.4 in the Source Code section.
+
 \pagebreak
 
 \section{Learning New Technology}
