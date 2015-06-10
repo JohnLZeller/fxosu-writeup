@@ -297,7 +297,7 @@ written assuming you are using a Linux distribution (mostly for consistency). Bu
 
 	You will be prompted whether you are trying to build for Desktop or Android. Select the build configuration you are  		attempting.  Note you can switch build platforms by running bootstrap again and re-configuring your .mozconfig file.  Note that bootstrapping for Android will take longer as it will install the entire Android platform.
 	\item \textbf{Firefox OS}\\
-	The prerequisites for building Firefox OS vary depending on the distribution of Linux that you are are running as well as device you are targeting.  For these build instruction I am going to provide instructions for building on Ubuntu 12.04 targeting the Flame. The Flame is the official reference device for testing and debugging on Firefox OS.  We were provided with three of the devices for the year for testing/debugging.  
+	The prerequisites for building Firefox OS vary depending on the distribution of Linux that you are running as well as device you are targeting.  For these build instruction I am going to provide instructions for building on Ubuntu 12.04 targeting the Flame. The Flame is the official reference device for testing and debugging on Firefox OS.  We were provided with three of the devices for the year for testing/debugging.  
 	
 	If you are a using a different distribution or want to build for a different device instructions for getting the build prerequisites can be found here: \\ \\
 	\href{https://developer.mozilla.org/en-US/Firefox\_OS/Firefox\_OS\_build\_prerequisites}{https://developer.mozilla.org/en-US/Firefox\_OS/Firefox\_OS\_build\_prerequisites}
@@ -460,7 +460,7 @@ This Section provides prototypes of the functions in our Service (both internal 
 \begin{lstlisting}[language=JavaScript]
 importFactory(contractIdentification, interfaceName)
 \end{lstlisting}
-This function returns returns either an instance of an XPCOM component or a reference so and XPCOM service.  It is used internally by our Service to retrieve various XPCOM services which we need data from such as the Memory Reporter Manager and Network Link Service.  \\ 
+This function returns either an instance of an XPCOM component or a reference so and XPCOM service.  It is used internally by our Service to retrieve various XPCOM services which we need data from such as the Memory Reporter Manager and Network Link Service.  \\ 
 \begin{lstlisting}[language=JavaScript]
 receiveMessage(aData)
 \end{lstlisting}
@@ -477,7 +477,7 @@ This is the internal function used by the XPCOM observers service to provide not
 \begin{lstlisting}[language=JavaScript]
 FxOSUService.MemoryManager()
 \end{lstlisting} 
-This fucntion calls the Memory Reporter XPCOM service to see what the current memory usage is.  It returns a dictionary containing the current Explicit and Resident memory usage numbers (in bytes).  Explicit memory usage is the amount of memory that has been explicitly allocated by calls to malloc or new.  Resident memory usage is the amount of physical memory is being used on the device by Firefox.  \\
+This function calls the Memory Reporter XPCOM service to see what the current memory usage is.  It returns a dictionary containing the current Explicit and Resident memory usage numbers (in bytes).  Explicit memory usage is the amount of memory that has been explicitly allocated by calls to malloc or new.  Resident memory usage is the amount of physical memory is being used on the device by Firefox.  \\
 \begin{lstlisting}[language=JavaScript]
 FxOSUService.numRequests(lastMillisecs)
 \end{lstlisting}  
@@ -498,7 +498,7 @@ Returns a dictionary object that holds the success rate, \# of successes, and nu
 \begin{lstlisting}[language=JavaScript]
 FxOSUService.successRateRecent(num)
 \end{lstlisting}
-Returns a dictionary object that holds the success rate, \# of successes, and number of attempts for the last num number of requests. It is used internally to determine the quality of the network for a specific group of requests.
+Returns a dictionary object that holds the success rate, \# of successes, and number of attempts for the last number of requests. It is used internally to determine the quality of the network for a specific group of requests.
 \begin{lstlisting}[language=JavaScript]
 FxOSUService.IsConnectionStable(lastMillisecs)
 \end{lstlisting}
@@ -526,7 +526,7 @@ Returns a boolean value corresponding to whether or not the device is currently 
 \begin{lstlisting}[language=JavaScript]
 FxOSUService.mozIsNowGood(level)
 \end{lstlisting}
-The primary function for our service which uses the device data we have access to using the functions above which provides a boolean interpreted as a go or no-go for three different levels of certainty about a network quality. Level 1 (highest) requires that no network requests have failed recently and that the device is currently plugged in.  Level 2 (moderate) returns false if the battery is not charging, the connection is not stable and the battery level is less that 40\% or if the battery is not charging and the battery is less than 30\% or if the success rate or recent network requests is less than 50\%. Level 3 (low) returns false if the connection is not stable and the battery is less than 20\% or if the battery is less then 10\% or if the success rate of recent requests is less than 5\%.
+The primary function for our service which uses the device data we have access to using the functions above which provides a boolean interpreted as a go or no-go for three different levels of certainty about a network quality. Level 1 (highest) requires that no network requests have failed recently and that the device is currently plugged in.  Level 2 (moderate) returns false if the battery is not charging, the connection is not stable and the battery level is less than 40\% or if the battery is not charging and the battery is less than 30\% or if the success rate or recent network requests is less than 50\%. Level 3 (low) returns false if the connection is not stable and the battery is less than 20\% or if the battery is less than 10\% or if the success rate of recent requests is less than 5\%.
 \end{itemize}
 \pagebreak
 
@@ -567,12 +567,12 @@ And here are a list of webpages, within these websites that we found most useful
 \section{What did we learn from all of this?}
 \subsection{John Zeller}
 \textbf{What technical information did you learn?}\\
-I learned a lot about JavaScript. When I first began working on this project, I came in with the urge to do and learn something outside of my comfort zone. I usually write in Python, and have primarily used Python in the 3 internships that I have had. So, writing JavaScript, and moreover, becoming aquanted with Firefox source code were both amazing learning experiences.
+I learned a lot about JavaScript. When I first began working on this project, I came in with the urge to do and learn something outside of my comfort zone. I usually write in Python, and have primarily used Python in the 3 internships that I have had. So, writing JavaScript, and moreover, becoming acquainted with Firefox source code were both amazing learning experiences.
 \\\\
 Digging into the Firefox source code gave me a much better idea of how a browser is put together. Understanding the complexities of a relatively small part of Firefox, such as IPC, has given me a great insight into the complexity of this code base.
 \\\\
 \textbf{What non-technical information did you learn?}\\
-I learned more about the organization of teams within Mozilla, and the separation of efforts in one product, accross multiple teams. There really is a huge amount of institutional knowledge, and a lot of it has been written out in their wiki pages. I also learned that a lot of those wiki pages are out of date, and need some love.
+I learned more about the organization of teams within Mozilla, and the separation of efforts in one product, across multiple teams. There really is a huge amount of institutional knowledge, and a lot of it has been written out in their wiki pages. I also learned that a lot of those wiki pages are out of date, and need some love.
 \\\\
 \textbf{What have you learned about project work?}\\
 I learned a lot about the importance of a design cycle such as Agile. Most of the senior design process is sort of intrinsically setup in a Waterfall design cycle, but you are free to iterate on that, running your own weekly, bi-weekly, monthly etc. Agile cycles. Our group in particular ran into this pretty hard, and we ended up changing 10 of our 24 requirements. When we originally wrote our requirements document during Fall term, we had an idea of what the project would look like, and not 4 weeks later, that idea changed significantly.
