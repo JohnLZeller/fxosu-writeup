@@ -72,7 +72,7 @@
 
 This project was requested by Mozilla, specifically the team working on Firefox OS. Our customer during the course of our project was Dietrich Ayala, a Project Manager working on Firefox OS and a member of the Mozilla family since February 2006. Dietrich's role in our project took many forms, and evolved as what we needed did so. Initially, he helped on board us to the Firefox OS platform, providing us with plenty of documentation to wrap our heads around, and once we have devoured this information, he was quick to setup meeting with members from the Firefox OS networking team. Throughout the year Dietrich was always available via IRC, Skype, Email, and Cell, whenever we needed him. And if he could not answer a question for us, he knew who could.
 \\\\
-The members of our team were John Zeller, Pok Yan Tjiam, and Jonathan McNeil. John Zeller, having worked with Mozilla for over a year as an intern and contractor, acted as a de facto team lead during the course of the project. Pok Yan Tjiam worked on API testing. Jonathan McNeil helped with the development of the API as well as building and testing on Firefox for Android and Desktop.
+The members of our team were John Zeller, Pok Yan Tjiam, and Jonathan McNeil. John Zeller, having worked with Mozilla for over a year as an intern and contractor, acted as a de facto team lead during the course of the project. Pok Yan Tjiam worked on API testing, blog posts and project site updates. Jonathan McNeil helped with the development of the API as well as building and testing on Firefox for Android and Desktop.
 \\\\
 The purpose of this project was to help work towards giving developers a tool that allows them to avoid the typical environment agnostic network request paradigm. As it currently stands, most developers create apps with little to no information about the quality of the network. In their apps, they typically run network requests in a dumb loop, which simply tries continually until the request succeeds. This is wasteful in terms of both battery and data, and overloads an often times already overloaded network.
 \\\\
@@ -130,25 +130,25 @@ As happens in most projects, requirements change, and ours was no different. Her
 \end{tabularx}
 \pagebreak
 
-\subsubsection{Gaant Chart}
-Here is the final Gaant chart for how our project timeline actually turned out.
+\subsubsection{Gantt Chart}
+Here is the final Gantt chart for how our project timeline actually turned out.
 
 \begin{figure}[h!]
   \centering
 	\includegraphics[scale=0.3]{finalgaant1.png}
-  \caption{1 of 3: The final Gaant chart for how our project timeline actually turned out.}
+  \caption{1 of 3: The final Gantt chart for how our project timeline actually turned out.}
 \end{figure}
 \begin{figure}[h!]
   \centering
 	\includegraphics[scale=0.3]{finalgaant2.png}
-  \caption{2 of 3: The final Gaant chart for how our project timeline actually turned out.}
+  \caption{2 of 3: The final Gantt chart for how our project timeline actually turned out.}
 \end{figure}
 \pagebreak
 
 \begin{figure}[h!]
   \centering
 	\includegraphics[scale=0.3]{finalgaant3.png}
-  \caption{3 of 3: The final Gaant chart for how our project timeline actually turned out.}
+  \caption{3 of 3: The final Gantt chart for how our project timeline actually turned out.}
 \end{figure}
 \pagebreak
 
@@ -173,7 +173,7 @@ This is the final project poster that we used when demoing our project at the En
 % Are there any special hardware, OS, or runtime requirements to run your software?
 % Any user guides, API documentation, etc.
 \subsection{Overview}
-Our project took shape through 4 distinct phases: Research, Prototype, Implementation, and Test App. Our research phase took us through understanding fundamental Firefox paradigms like XPCOM and foundational concepts like IPC, JavaScript Runtime, and WebIDL. Our research phase stayed active throughout most of our Prototype and Implementation phases, as we learned new concepts that were necessary for us to accomplish the design we'd set out to build. When building our prototype, we learned a lot about what has to be built into the core of Firefox, as opposed to being tested in a priveleged JavaScript add-on. Implementation brought a lot of its' own challanges, smoothed over by the things learned during prototyping. And finally, our test app helped to highlight the strengths and weaknesses of the final implementation that we had come up with.
+Our project took shape through 4 distinct phases: Research, Prototype, Implementation, and Test App. Our research phase took us through understanding fundamental Firefox paradigms like XPCOM and foundational concepts like IPC, JavaScript Runtime, and WebIDL. Our research phase stayed active throughout most of our Prototype and Implementation phases, as we learned new concepts that were necessary for us to accomplish the design we'd set out to build. When building our prototype, we learned a lot about what has to be built into the core of Firefox, as opposed to being tested in a privileged JavaScript add-on. Implementation brought a lot of its' own challenges, smoothed over by the things learned during prototyping. And finally, our test app helped to highlight the strengths and weaknesses of the final implementation that we had come up with.
 \\\\
 The final implementation can be thought of as a service which collects data behind the scenes while the user is browsing websites or using web-applications.  We then expose parts of this data to web developers in two different ways.  The easiest way to get information from our service is using functions attached a property in navigator.  This is done via WebIDL and only a subset of our functionality is exposed. We also implement and XPCOM component which is exposed to other internal browser services. Our service collects and stores data about recent network and device events using observers. When our service is called in either manner. It uses the collected data to attempt to decide whether it is a good time to make a network request with the goal of shifting away from the current paradigm of constantly retrying a failed network request until it succeeds.  
 \pagebreak
@@ -192,7 +192,7 @@ Our API is added into the core of Gecko, allowing it to be easily added to any p
 \subsection{Theory of Operation}
 When Firefox OS first starts up, it runs through a set of boot procedures, at the end of which is the launching of Gaia, Firefox OS's UI. Our API has been registered, via the FxOSUService.manifest and FxOSUService.js files, to be run at startup. This startup procedure ensures that out API is initialized and ready to go when an application goes to use our API. The initialization of FxOSUService consists of the importing of utilities and XPCOM components, the declaring of global data structures of our service to record network data, the declaration of a receiveMessage function for the receiving of IPC messages, and the registering of message listeners with the child process message manager for "NetworkStatsService:Request" and "NetworkStatsService:Response" messages. While this is happening, NetworkStatsService.jsm is also being initialized, and as a part of it's own initialization, it registers observers for 'http-on-modify-request' and 'http-on-examine-response' events. It then sets up an observe function for receiving those events and handling the broadcasting of an IPC 'NetworkStatsService:Request' message for 'http-on-modify-request' events, and an IPC 'NetworkStatsService:Response' message for 'http-on-examine-response' to our FxOSUService receiveMessage function we specified during the FxOSUService initialization. When FxOSUService receives a message in receiveMessage, it stores the data in the global data structure requestStats if the message was from an 'http-on-modify-request' event, and stores the data in the global data structure responseStats if the message was from an 'http-on-examine-response' event.
 \\\\
-Our API, first and foremost, is meant to provide user-facing capability in the form of a web API. Specifically, an application developer needs to be able to call our API, and receive a go/no-go response, so that they can design their network request loops in an efficient manner. The process of calling, and propogation through the core, until the user receives a response can become quite complicated. Here is a flow chart to visualize the process.
+Our API, first and foremost, is meant to provide user-facing capability in the form of a web API. Specifically, an application developer needs to be able to call our API, and receive a go/no-go response, so that they can design their network request loops in an efficient manner. The process of calling, and propagation through the core, until the user receives a response can become quite complicated. Here is a flow chart to visualize the process.
 
 \begin{figure}[h!]
   \centering
