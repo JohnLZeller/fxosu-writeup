@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "name": "FxOSU Test App",
+  "description": "This app demonstrates how the FxOSUService API works.",
+  "launch_path": "/index.html",
+  "icons": {
+    "16": "/img/icons/icon16x16.png",
+    "48": "/img/icons/icon48x48.png",
+    "60": "/img/icons/icon60x60.png",
+    "128": "/img/icons/icon128x128.png"
+  },
+  "developer": [{
+                  "name": "John Zeller",
+                  "url": "http://johnzeller.com",
+                  "email": "johnlzeller@gmail.com"
+                },
+                {
+                  "name": "Pok Yan Tjiam",
+                  "email": "tjiamp@onid.oregonstate.edu"
+                },
+                {
+                  "name": "Jonathan McNeil",
+                  "email": "mcneilj@onid.oregonstate.edu"
+                }
+  ],
+  "type": "certified",
+  "permissions": {
+    "systemXHR": {
+      "description": "Required to load remote content"
+    }
+  },
+  "installs_allowed_from": [
+    "*"
+  ],
+  "locales": {
+    "es": {
+      "name": "Aplicación de Prueba FxOSU",
+      "description": "Esta aplicación demuestra cómo funciona la API FxOSUService.",
+      "permissions": {
+        "systemXHR": {
+          "description": "Requerido para cargar contenido remoto"
+        }
+      }
+    }
+  },
+  "default_locale": "en"
+}

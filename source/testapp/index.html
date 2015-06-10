@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Test app</title>
+    <meta name="description" content="FxOSU Test App">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" type="text/css" href="css/action_menu.css">
+    <link rel="stylesheet" type="text/css" href="css/switches.css">
+    <link rel="stylesheet" type="text/css" href="css/toolbars.css">
+    <link rel="stylesheet" type="text/css" href="css/value_selector.css">
+
+    <link rel="stylesheet" type="text/css" href="css/headers.css">
+    <link rel="stylesheet" type="text/css" href="css/buttons.css">
+    <link rel="stylesheet" type="text/css" href="css/tabs.css">
+    <link rel="stylesheet" type="text/css" href="css/progress_activity.css">
+    <link rel="stylesheet" href="fonts.css">
+    <link rel="stylesheet" href="css/app.css">
+    <script type="text/javascript" src="js/app.js" defer></script>
+    <link rel="prefetch" type="application/l10n" href="data/locales.ini" />
+    <script type="text/javascript" src="js/libs/l10n.js" defer></script>
+    <script type="text/javascript" src="js/filter.js" defer></script>
+  </head>
+  <body role="application">
+    <section role="region">
+      <header>
+        <h1 data-l10n-id="app_title">FxOSU Test App</h1>
+      </header>
+    </section>
+    <section role="region">
+      <div id="main">
+        <ul role="tablist" class="bb-tablist" data-type="filter">
+          <li id="panel1" role="presentation">
+            <a id="tab1" href="#panel1" role="tab" aria-controls="benchmark">Benchmark</a>
+          </li>
+          <li id="panel2" role="presentation">
+            <a id="tab2" href="#panel2" role="tab" aria-controls="fxosuservice">API</a>
+          </li>
+        </ul>
+        <div id="description">
+          <center><h2 data-l10n-id="app_description">This app demonstrates how the FxOSUService API works</h2></center>
+        </div>
+        <div id="benchmark" class="bb-tabpanel" role="tabpanel" aria-labelledby="tab1">
+          <h3 style="margin-top: -10px;">FxOSUService Benchmark</h3>
+          <p>Contrasts resource usage with/without our API.</p>
+          <form>
+            <label>Confidence Level: </label>
+            <select style="width: 50%; height: 30px; font-size: 1em;" id="benchmarkLevel">
+              <option>1 - High</option>
+              <option selected="selected">2 - Moderate</option>
+              <option>3 - Low</option>
+            </select>
+          </form>
+          <progress id="progress" value="0" max="100"></progress>
+          <table style="padding: 5px;">
+          <tr style="padding: 5px;">
+            <th style="text-align: left; padding: 5px;">Network: </th>
+            <td style="padding: 5px;" id="netStatus"></td>
+            <td style="padding: 5px;" id="intStatus"></td>
+          </tr>
+          <tr style="padding: 5px;">
+            <td style="text-align: left; padding: 5px;">Usage</td>
+            <th style="text-align: left; padding: 5px;">without</th>
+            <th style="text-align: left; padding: 5px;">with</th>
+          </tr>
+          <tr style="padding: 5px;">
+            <th style="text-align: left; padding: 5px;">Success Rate</th>
+            <td style="padding: 5px;" id="sucWithout"></td>
+            <td style="padding: 5px;" id="sucWith"></td>
+          </tr>
+          <tr style="padding: 5px;">
+            <th style="text-align: left; padding: 5px;">Attempts</th>
+            <td style="padding: 5px;" id="attemptsWithout"></td>
+            <td style="padding: 5px;" id="attemptsWith"></td>
+          </tr>
+          <tr style="padding: 5px;">
+            <th style="text-align: left; padding: 5px;">Successes</th>
+            <td style="padding: 5px;" id="successesWithout"></td>
+            <td style="padding: 5px;" id="successesWith"></td>
+          </tr>
+          <tr style="padding: 5px;">
+            <th style="text-align: left; padding: 5px;">Battery</th>
+            <td style="padding: 5px;" id="batWithout"></td>
+            <td style="padding: 5px;" id="batWith"></td>
+          </tr>
+          <tr style="padding: 5px;">
+            <th style="text-align: left; padding: 5px;">Memory</th>
+            <td style="padding: 5px;" id="memWithout"></td>
+            <td style="padding: 5px;" id="memWith"></td>
+          </tr>
+          <tr style="padding: 5px;">
+            <th style="text-align: left; padding: 5px;">Data Rx</th>
+            <td style="padding: 5px;" id="dataWithout"></td>
+            <td style="padding: 5px;" id="dataWith"></td>
+          </tr>
+          <tr style="padding: 5px;">
+            <th style="text-align: left; padding: 5px;">Average Latency</th>
+            <td style="padding: 5px;" id="latWithout"></td>
+            <td style="padding: 5px;" id="latWith"></td>
+          </tr>
+          </table>
+          <br /><button id="runbenchmark" class="bb-button recommend" >Run Benchmark Test</button>
+        </div>
+        <div id="fxosuservice" class="bb-tabpanel" role="tabpanel" aria-labelledby="tab2">
+          <h3 style="margin-top: -10px;">API Test</h3>
+          <h3>Internal API functions</h3>
+          <table>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Battery Level: </th>
+              <td style="margin: 5px;" id="batlevel"></td>
+            </tr>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Battery Charging: </th>
+              <td style="margin: 5px;" id="batcharge"></td>
+            </tr>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Connected to Internet: </th>
+              <td style="margin: 5px;" id="connected"></td>
+            </tr>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Latency (ms): </th>
+              <td style="margin: 5px;" id="latency"></td>
+            </tr>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Connection type: </th>
+              <td style="margin: 5px;" id="ctype"></td>
+            </tr>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Bytes Received: </th>
+              <td style="margin: 5px;" id="recbytes"></td>
+            </tr>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Connection Stable: </th>
+              <td style="margin: 5px;" id="cstable"></td>
+            </tr>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Success Rate: </th>
+              <td style="margin: 5px;" id="successrate"></td>
+            </tr>
+          </table>
+
+          <h3>Calling of mozIsNowGood()</h3>
+          This API allows the developer to set a level of certainty with 1 being high, 2 being moderate, and 3 being low. This returns a true/false (go/no-go) answer.<br><br>
+          <table>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">High Certainty: </th>
+              <td style="margin: 5px;" id="high"></td>
+            </tr>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Moderate Certainty: </th>
+              <td style="margin: 5px;" id="mod"></td>
+            </tr>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Low Certainty: </th>
+              <td style="margin: 5px;" id="low"></td>
+            </tr>
+          </table><br>
+
+          Here is the data being used from the past 2 seconds, to make these determinations:<br><br>
+          <table>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Battery Level: </th>
+              <td style="margin: 5px;" id="mozbatlevel"></td>
+            </tr>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Battery Charging: </th>
+              <td style="margin: 5px;" id="mozbatcharge"></td>
+            </tr>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Connection Stable: </th>
+              <td style="margin: 5px;" id="mozcstable"></td>
+            </tr>
+            <tr>
+              <th style="text-align: left; vertical-align: text-top;">Success Rate: </th>
+              <td style="margin: 5px;" id="mozsuccessrate"></td>
+            </tr>
+          </table>
+          <br /><button id="fxosutest" class="bb-button recommend">Test</button>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

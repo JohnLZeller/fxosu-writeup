@@ -187,6 +187,24 @@ There are almost 4 million lines of code in Firefox, and our project barely scra
 \end{figure}
 \pagebreak
 
+Our API is added into the core of Gecko, allowing it to be easily added to any platform that Firefox is compiled for, assuming of course that there are no conflicts between our source code functionalty and the compiled platform implementation. An explanation about what each piece of this source code structure is for is in the subsection of this chapter called 'Source Code'.
+
+\subsection{Theory of Operation}
+When Firefox OS first starts up, it runs through a set of boot procedures, at the end of which is the launching of Gaia, Firefox OS's UI. Our API has been registered, via the FxOSUService.manifest and FxOSUService.js files, to be run at startup. This startup procedure ensures that out API is initialized and ready to go when an application goes to use our API. The initialization of FxOSUService consists of the importing of utilities and XPCOM components, the declaring of global data structures of our service to record network data, the declaration of a receiveMessage function for the receiving of IPC messages, and the registering of message listeners with the child process message manager for "NetworkStatsService:Request" and "NetworkStatsService:Response" messages. While this is happening, NetworkStatsService.jsm is also being initialized, and as a part of it's own initialization, it registers observers for 'http-on-modify-request' and 'http-on-examine-response' events. It then sets up an observe function for receiving those events and handling the broadcasting of an IPC 'NetworkStatsService:Request' message for 'http-on-modify-request' events, and an IPC 'NetworkStatsService:Response' message for 'http-on-examine-response' to our FxOSUService receiveMessage function we specified during the FxOSUService initialization. When FxOSUService receives a message in receiveMessage, it stores the data in the global data structure requestStats if the message was from an 'http-on-modify-request' event, and stores the data in the global data structure responseStats if the message was from an 'http-on-examine-response' event.
+\\\\
+Our API, first and foremost, is meant to provide user-facing capability in the form of a web API. Specifically, an application developer needs to be able to call our API, and receive a go/no-go response, so that they can design their network request loops in an efficient manner. The process of calling, and propogation through the core, until the user receives a response can become quite complicated. Here is a flow chart to visualize the process.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[scale=0.35]{userflow.png}
+  \caption{Operational flow after a user calls the web-facing API.}
+\end{figure}
+\pagebreak
+
+In some arbitrary developers application, there is a loop setup, calling our function periodically. The API is hanging off of the navigator object built into the browser, attached to our API service called 'FxOSUService'. When the application calls to receive a go/no-go answer, it calls navigator.FxOSUService.mozIsNowGood(), and waits for an answer. When the API is called, Firefox checks the webidl implementation to see what mozIsNowGood is. It finds out that it should return a boolean value, that it accepts an optional float value, and furthermore, the XPCOM component where the function lives. Once Firefox learns all of this, it calls the mozIsNowGood function in the XPCOM component. From here the mozIsNowGood function checks to see if a user specified level of confidence has been supplied, and if not, defaults the level to 2, which stands for moderate confidence level. From here mozIsNowGood calls its' internal functions (many of which are also exposed by the webidl), and obtains the device battery level, battery charging state, the connection stability, and connection success rate.
+\\\\
+With this data, the function moves into a switch/case which reads the confidence level, and from there checks against a number of evaluations based on the retrieved data, and if the data falls below the thresholds specified in that confidence level, then the function returns false, for no-go. However, if all evaluations pass without falling below a threshold specified by the confidence level, then the function returns true, for go. From here, the boolean answer is then returned back through the call chain setup from user, to webidl, to XPCOM component, and the call to navigator.FxOSUService.mozIsNowGood() returns a boolean go/no-go.
+
 \subsection{Source Code}
 Here is a description of each of the files used in our project.
 
@@ -347,20 +365,6 @@ This file lists references to interfaces and the directory names of all XPCOM co
 \subsubsection{mobile/android/installer/package-manifest.in}
 This file required modification to include references to our new XPCOM component. This is necessary when compiling Firefox for Android.
 \pagebreak
-
-\subsection{Theory of Operation}
-Our API, first and foremost, is meant to provide user-facing capability in the form of a web API. Specifically, an application developer needs to be able to call our API, and receive a go/no-go response, so that they can design their network request loops in an efficient manner. The process of calling, and propogation through the core, until the user receives a response can become quite complicated. Here is a flow chart to visualize the process.
-
-\begin{figure}[h!]
-  \centering
-    \includegraphics[scale=0.35]{userflow.png}
-  \caption{Operational flow after a user calls the web-facing API.}
-\end{figure}
-\pagebreak
-
-In some arbitrary developers application, there is a loop setup, calling our function periodically. The API is hanging off of the navigator object built into the browser, attached to our API service called 'FxOSUService'. When the application calls to receive a go/no-go answer, it calls navigator.FxOSUService.mozIsNowGood(), and waits for an answer. When the API is called, Firefox checks the webidl implementation to see what mozIsNowGood is. It finds out that it should return a boolean value, that it accepts an optional float value, and furthermore, the XPCOM component where the function lives. Once Firefox learns all of this, it calls the mozIsNowGood function in the XPCOM component. From here the mozIsNowGood function checks to see if a user specified level of confidence has been supplied, and if not, defaults the level to 2, which stands for moderate confidence level. From here mozIsNowGood calls its' internal functions (many of which are also exposed by the webidl), and obtains the device battery level, battery charging state, the connection stability, and connection success rate.
-\\\\
-With this data, the function moves into a switch/case which reads the confidence level, and from there checks against a number of evaluations based on the retrieved data, and if the data falls below the thresholds specified in that confidence level, then the function returns false, for no-go. However, if all evaluations pass without falling below a threshold specified by the confidence level, then the function returns true, for go. From here, the boolean answer is then returned back through the call chain setup from user, to webidl, to XPCOM component, and the call to navigator.FxOSUService.mozIsNowGood() returns a boolean go/no-go.
 
 \subsection{Building/Running from Source}
 Running our project requires building a custom version of Firefox for the destination platform.  Our code 
@@ -652,7 +656,8 @@ If I was going to do it all over I would of spent a lot more time and effort dur
 \appendix
 \section{Appendix I}
 % Essential Code Listings. You don't have to include absolutely everything, but if someone wants to understand your project, there should be enough here to learn from. If you worked within a larger project, something like a patch file might be a good way to go.
-\subsection{Source Code}
+\subsection{API Source Code}
+Full up-to-date source code can be found at: \href{https://github.com/JohnLZeller/fxosu}{https://github.com/JohnLZeller/fxosu}
 
 \subsubsection{b2g/installer/package-manifest.in}
 \lstinputlisting[language=diff, breaklines=true]{diffs/b2g-installer-package-manifest.diff}
@@ -698,12 +703,27 @@ If I was going to do it all over I would of spent a lot more time and effort dur
 \lstinputlisting[language=diff, breaklines=true]{diffs/mobile-android-installer-package-manifest.diff}
 \pagebreak
 
-\subsubsection{testapp/app.js}
-\lstinputlisting[language=javascript, breaklines=true]{source/app.js}
+\subsection{Test App Source Code}
+Full up-to-date source code can be found at: \href{https://github.com/IvanTjiam/fxosu-test}{https://github.com/IvanTjiam/fxosu-test}
+
+\subsubsection{index.html}
+\lstinputlisting[language=html, breaklines=true]{source/testapp/index.html}
 \pagebreak
 
-\subsubsection{testapp/index.html}
-\lstinputlisting[language=html, breaklines=true]{source/index.html}
+\subsubsection{manifest.webapp}
+\lstinputlisting[language={}, breaklines=true]{source/testapp/manifest.webapp}
+\pagebreak
+
+\subsubsection{js/app.js}
+\lstinputlisting[language=javascript, breaklines=true]{source/testapp/app.js}
+\pagebreak
+
+\subsubsection{js/filter.js}
+\lstinputlisting[language=javascript, breaklines=true]{source/testapp/filter.js}
+\pagebreak
+
+\subsubsection{css/app.css}
+\lstinputlisting[language={}, breaklines=true]{source/testapp/app.css}
 \pagebreak
 
 \section{Appendix II}
